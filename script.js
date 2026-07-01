@@ -302,8 +302,8 @@
     if (view.month > 11) { view.month = 0; view.year++; }
     renderCalendar(delta > 0 ? "next" : "prev");
   }
-  el.prevMonth.addEventListener("click", () => changeMonth(-1));
-  el.nextMonth.addEventListener("click", () => changeMonth(1));
+  el.prevMonth.addEventListener("click", (e) => { changeMonth(-1); e.currentTarget.blur(); });
+  el.nextMonth.addEventListener("click", (e) => { changeMonth(1); e.currentTarget.blur(); });
 
   function goToToday() {
     const t = new Date();
@@ -325,7 +325,7 @@
       }
     });
   }
-  el.todayBtn.addEventListener("click", goToToday);
+  el.todayBtn.addEventListener("click", (e) => { goToToday(); e.currentTarget.blur(); });
   el.brandHomeBtn.addEventListener("click", goToToday);
 
   document.addEventListener("keydown", (e) => {
@@ -1072,7 +1072,14 @@
     e.stopPropagation();
     const willOpen = !el.timePicker.classList.contains("open");
     el.timePicker.classList.toggle("open", willOpen);
-    if (willOpen) scrollTimeColumnsIntoView();
+    if (willOpen) {
+      scrollTimeColumnsIntoView();
+      requestAnimationFrame(() => {
+        if (typeof el.timePickerPanel.scrollIntoView === "function") {
+          el.timePickerPanel.scrollIntoView({ block: "nearest", behavior: "smooth" });
+        }
+      });
+    }
   });
   document.addEventListener("click", () => el.timePicker.classList.remove("open"));
   el.timePickerPanel.addEventListener("click", (e) => e.stopPropagation());
