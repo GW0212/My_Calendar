@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>나의 달력</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- ===== Header ===== -->
+  <header class="topbar">
+    <button class="brand" id="brandHomeBtn" title="오늘로 이동" aria-label="오늘로 이동">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+          <rect x="3" y="5" width="18" height="16" rx="4" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M8 3v4M16 3v4M3 10h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          <circle cx="8.2" cy="14.2" r="1.3" fill="currentColor"/>
+          <circle cx="12" cy="14.2" r="1.3" fill="currentColor" opacity="0.5"/>
+          <circle cx="15.8" cy="14.2" r="1.3" fill="currentColor" opacity="0.5"/>
+        </svg>
+      </div>
+      <span class="brand-name">나의 달력</span>
+    </button>
+  </header>
+
+  <!-- ===== Month Navigation ===== -->
+  <section class="month-nav">
+    <div class="month-title-wrap">
+      <span class="ghost-num" id="ghostMonth">07</span>
+      <div class="month-title">
+        <h1 id="monthLabel">2026년 7월</h1>
+        <p class="month-sub" id="monthSub">일정 0개</p>
+        <div class="color-stats" id="colorStats"></div>
+      </div>
+    </div>
+
+    <div class="nav-stack">
+      <div class="nav-controls">
+        <div class="nav-group">
+          <button class="nav-btn" id="prevMonth" aria-label="이전 달">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="today-btn" id="todayBtn">오늘</button>
+          <button class="nav-btn" id="nextMonth" aria-label="다음 달">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <button class="jump-btn" id="jumpBtn" title="특정 연/월로 이동">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none"><rect x="3" y="4.5" width="18" height="16" rx="3.5" stroke="currentColor" stroke-width="1.6"/><path d="M8 3v3.5M16 3v3.5M3 9.5h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          이동
+        </button>
+        <button class="jump-btn" id="colorAssignBtn" title="날짜 색상 한번에 지정">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none"><path d="M12 21c-4.4 0-8-3.5-8-8 0-5 4-9.5 8-12.5 4 3 8 7.5 8 12.5 0 4.5-3.6 8-8 8z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="13" r="2.4" stroke="currentColor" stroke-width="1.6"/></svg>
+          색상 지정
+        </button>
+      </div>
+
+      <div class="topbar-actions">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <input type="text" id="searchInput" placeholder="일정 검색…" autocomplete="off">
+        </div>
+        <button class="icon-btn" id="themeToggle" title="테마 전환" aria-label="테마 전환">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" id="themeIcon"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="menu-wrap">
+          <button class="icon-btn" id="dataMenuBtn" title="데이터 관리" aria-label="데이터 관리">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="menu-dropdown" id="dataMenu">
+            <button data-action="export-ics-month">📱 이번 달 일정 캘린더에 공유 (.ics)</button>
+            <button data-action="export-ics-all">📱 전체 일정 캘린더에 공유 (.ics)</button>
+            <div class="menu-divider"></div>
+            <button data-action="export-month">📤 이번 달 내보내기 (JSON)</button>
+            <button data-action="export-all">🗂️ 전체 데이터 내보내기 (JSON)</button>
+            <button data-action="import">📥 JSON 불러오기</button>
+            <div class="menu-divider"></div>
+            <button data-action="clear-month" class="danger">🗑️ 이번 달 데이터 삭제</button>
+          </div>
+        </div>
+        <input type="file" id="importFile" accept="application/json" hidden>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Calendar Grid ===== -->
+  <section class="calendar-wrap">
+    <div class="weekday-row">
+      <span class="wd sun">일</span><span class="wd">월</span><span class="wd">화</span><span class="wd">수</span><span class="wd">목</span><span class="wd">금</span><span class="wd sat">토</span>
+    </div>
+    <div class="grid" id="calendarGrid"></div>
+  </section>
+</div>
+
+<!-- ===== Day Detail Modal ===== -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal" id="dayModal" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <div>
+        <p class="modal-eyebrow" id="modalWeekday">MONDAY</p>
+        <h2 id="modalDate">7월 1일</h2>
+      </div>
+      <div class="modal-header-actions">
+        <button class="icon-btn" id="addEventToggleBtn" title="일정 추가" aria-label="일정 추가">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <button class="icon-btn" id="closeModal" aria-label="닫기">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <p class="section-label">날짜 색상 표시</p>
+      <div class="date-color-row" id="dateColorRow"></div>
+    </div>
+
+    <div class="modal-section event-list-section">
+      <p class="section-label">일정</p>
+      <div class="event-list" id="eventList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Add / Edit Event Modal ===== -->
+<div class="modal-backdrop" id="eventFormBackdrop">
+  <div class="modal modal-event-form" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <h2 id="eventFormTitle">새 일정 추가</h2>
+      <button class="icon-btn" id="closeEventForm" aria-label="닫기">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <form id="addEventForm">
+      <input type="hidden" id="editingEventId">
+      <div class="form-row">
+        <input type="text" id="eventTitle" placeholder="일정 제목" required maxlength="60">
+        <div class="time-picker" id="timePicker">
+          <button type="button" class="time-picker-btn" id="timePickerBtn">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6"/><path d="M12 7.5V12l3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span id="timePickerLabel">시간 선택</span>
+          </button>
+          <div class="time-picker-panel" id="timePickerPanel">
+            <div class="time-cols">
+              <div class="time-col" id="ampmCol"></div>
+              <div class="time-col" id="hourCol"></div>
+              <div class="time-col" id="minuteCol"></div>
+            </div>
+            <div class="time-picker-footer">
+              <button type="button" class="btn-ghost time-footer-btn" id="timeClearBtn">선택 안함</button>
+              <button type="button" class="btn-primary time-footer-btn" id="timeConfirmBtn">확인</button>
+            </div>
+          </div>
+        </div>
+        <input type="hidden" id="eventTime">
+      </div>
+      <textarea id="eventMemo" placeholder="메모 (선택)" rows="3" maxlength="300"></textarea>
+      <div class="form-row form-row-bottom">
+        <div class="form-btns">
+          <button type="button" class="btn-ghost" id="cancelEditBtn">취소</button>
+          <button type="submit" class="btn-primary" id="submitEventBtn">일정 추가</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===== Jump to date modal ===== -->
+<div class="modal-backdrop" id="jumpBackdrop">
+  <div class="modal modal-small" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <h2>날짜로 이동</h2>
+      <button class="icon-btn" id="closeJump" aria-label="닫기">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="modal-section jump-form">
+      <div class="picker" id="yearPicker">
+        <button type="button" class="picker-btn" id="yearPickerBtn">
+          <span id="yearPickerLabel">2026년</span>
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="picker-list" id="yearPickerList"></div>
+      </div>
+      <div class="picker" id="monthPicker">
+        <button type="button" class="picker-btn" id="monthPickerBtn">
+          <span id="monthPickerLabel">7월</span>
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="picker-list" id="monthPickerList"></div>
+      </div>
+      <button class="btn-primary" id="jumpGoBtn">이동</button>
+    </div>
+    <div class="jump-mini-cal" id="jumpMiniCal"></div>
+    <p class="mini-hint">미리보기에서 날짜를 클릭하면 바로 해당 날짜로 이동해요</p>
+  </div>
+</div>
+
+<!-- ===== Color Assign modal ===== -->
+<div class="modal-backdrop" id="colorBackdrop">
+  <div class="modal modal-small" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <h2>날짜 색상 지정</h2>
+      <button class="icon-btn" id="closeColor" aria-label="닫기">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="modal-section">
+      <p class="section-label">색상 선택</p>
+      <div class="mini-paint-row" id="colorPaintRow"></div>
+    </div>
+    <div class="color-cal-nav">
+      <div class="color-cal-center">
+        <button type="button" class="nav-btn" id="colorPrevMonth" aria-label="이전 달">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span id="colorCalLabel">2026년 7월</span>
+        <button type="button" class="nav-btn" id="colorNextMonth" aria-label="다음 달">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <button type="button" class="mini-today-btn" id="colorTodayBtn">오늘</button>
+    </div>
+    <div class="jump-mini-cal" id="colorMiniCal"></div>
+    <p class="mini-hint paint-active" id="colorHint">색상을 먼저 선택한 뒤, 날짜를 클릭하면 바로 칠해져요.</p>
+  </div>
+</div>
+
+<div class="toast-stack" id="toastStack"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
