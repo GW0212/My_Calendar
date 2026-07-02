@@ -157,7 +157,7 @@
   function toast(msg, type = "info") {
     const t = document.createElement("div");
     t.className = `toast ${type}`;
-    t.innerHTML = `<span class="dot"></span><span>${escapeHtml(msg)}</span>`;
+    t.innerHTML = `<span class="dot"></span><span class="toast-msg">${escapeHtml(msg)}</span>`;
     el.toastStack.appendChild(t);
     setTimeout(() => {
       t.classList.add("leaving");
@@ -211,11 +211,16 @@
     const totalCells = Math.ceil((firstDow + daysInMonth) / 7) * 7;
 
     el.grid.innerHTML = "";
-    if (direction) {
-      el.grid.classList.remove("slide-left", "slide-right");
+    el.grid.classList.remove("slide-left", "slide-right", "animate-in");
+    if (direction === "next" || direction === "prev") {
       void el.grid.offsetWidth;
       el.grid.classList.add(direction === "next" ? "slide-left" : "slide-right");
+    } else if (direction) {
+      // truthy but not a slide direction (e.g. true) -> genuine navigation without a known side, use fade-in
+      void el.grid.offsetWidth;
+      el.grid.classList.add("animate-in");
     }
+    // falsy direction (undefined/null) = plain in-place refresh (color change, search, import, etc.) -> no animation
 
     const tKey = todayKey();
 
@@ -455,7 +460,7 @@
 
         cell.addEventListener("click", () => {
           view.year = year; view.month = month;
-          renderCalendar();
+          renderCalendar(true);
           el.jumpBackdrop.classList.remove("open");
           openDayModal(key);
         });
@@ -477,7 +482,7 @@
   el.jumpGoBtn.addEventListener("click", () => {
     view.year = jumpSelectedYear;
     view.month = jumpSelectedMonth;
-    renderCalendar();
+    renderCalendar(true);
     el.jumpBackdrop.classList.remove("open");
   });
 
@@ -1148,7 +1153,19 @@
     closeEventFormModal();
   });
 
+  /* ---------- real viewport height (fixes modal cutoff in mobile browsers/webviews) ---------- */
+  function setAppHeight() {
+    const h = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+    document.documentElement.style.setProperty("--app-height", `${h}px`);
+  }
+  setAppHeight();
+  window.addEventListener("resize", setAppHeight);
+  window.addEventListener("orientationchange", () => setTimeout(setAppHeight, 150));
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", setAppHeight);
+  }
+
   /* ---------- init ---------- */
   applyTheme();
-  renderCalendar();
+  renderCalendar(true);
 })();
