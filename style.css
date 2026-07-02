@@ -799,6 +799,7 @@ textarea{ width:100%; resize: vertical; font-family: var(--font-body); }
   box-shadow: var(--shadow-pop);
   max-height: 200px;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 4px;
   z-index: 30;
   opacity:0; visibility:hidden; transform: translateY(-6px);
@@ -807,14 +808,17 @@ textarea{ width:100%; resize: vertical; font-family: var(--font-body); }
 .picker.open .picker-list{ opacity:1; visibility:visible; transform: translateY(0); }
 .picker-item{
   box-sizing: border-box;
+  width: 100%;
   height: 32px;
   display:flex; align-items:center; justify-content:center;
   padding: 0 12px;
+  margin: 0;
   border-radius: 7px;
   font-size: .85rem;
   color: var(--text);
   cursor: pointer;
   text-align: center;
+  white-space: nowrap;
 }
 .picker-item:hover{ background: var(--surface-2); }
 .picker-item:active{ transform: scale(.96); }

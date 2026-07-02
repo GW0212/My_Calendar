@@ -395,7 +395,7 @@
   function scrollPickerSelectionIntoView(listEl) {
     const selected = listEl.querySelector(".selected");
     if (selected && typeof selected.scrollIntoView === "function") {
-      selected.scrollIntoView({ block: "center" });
+      selected.scrollIntoView({ block: "center", inline: "nearest" });
     }
   }
 
@@ -593,12 +593,16 @@
           }
           if (colorPaintColor === "") {
             delete db.dateColors[key];
+          } else if (db.dateColors[key] === colorPaintColor) {
+            // clicking the same color again on an already-painted date removes it
+            delete db.dateColors[key];
           } else {
             db.dateColors[key] = colorPaintColor;
           }
           saveData();
           renderColorMiniCal(colorCalYear, colorCalMonth);
           if (view.year === year && view.month === month) renderCalendar();
+          if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
           requestAnimationFrame(() => {
             const repainted = el.colorMiniCal.querySelector(`.mini-cell[data-key="${key}"]`);
             if (repainted) {
@@ -946,8 +950,13 @@
       sw.style.background = c.hex;
       sw.title = c.name;
       sw.addEventListener("click", () => {
-        db.dateColors[key] = c.hex;
+        if (current === c.hex) {
+          delete db.dateColors[key];
+        } else {
+          db.dateColors[key] = c.hex;
+        }
         saveData(); renderDateColorRow(key); renderCalendar();
+        if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
       });
       el.dateColorRow.appendChild(sw);
     });
