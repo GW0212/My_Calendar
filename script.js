@@ -473,6 +473,7 @@
   el.jumpBtn.addEventListener("click", () => {
     populateJumpSelectors();
     renderJumpMiniCal(view.year, view.month);
+    setAppHeight();
     el.jumpBackdrop.classList.add("open");
   });
   el.closeJump.addEventListener("click", () => el.jumpBackdrop.classList.remove("open"));
@@ -623,6 +624,7 @@
     buildColorPaintRow();
     resetColorPaintTool();
     renderColorMiniCal(view.year, view.month);
+    setAppHeight();
     el.colorBackdrop.classList.add("open");
   });
   el.closeColor.addEventListener("click", () => { resetColorPaintTool(); el.colorBackdrop.classList.remove("open"); });
@@ -885,6 +887,7 @@
       if (ev) startEditEvent(key, ev);
     }
 
+    setAppHeight();
     el.modalBackdrop.classList.add("open");
   }
   function closeDayModal() {
@@ -905,6 +908,7 @@
 
   /* ---------- add / edit event popup ---------- */
   function openEventFormModal() {
+    setAppHeight();
     el.eventFormBackdrop.classList.add("open");
     el.eventTitle.focus();
   }
@@ -1155,15 +1159,26 @@
 
   /* ---------- real viewport height (fixes modal cutoff in mobile browsers/webviews) ---------- */
   function setAppHeight() {
-    const h = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+    const candidates = [window.innerHeight];
+    if (window.visualViewport && window.visualViewport.height) candidates.push(window.visualViewport.height);
+    if (document.documentElement && document.documentElement.clientHeight) candidates.push(document.documentElement.clientHeight);
+    // use the smallest reported value: the safest bet against in-app browser toolbars
+    // that overstate the usable viewport height
+    const h = Math.min(...candidates.filter(v => v > 0));
     document.documentElement.style.setProperty("--app-height", `${h}px`);
   }
   setAppHeight();
+  window.addEventListener("load", setAppHeight);
+  window.addEventListener("pageshow", setAppHeight);
   window.addEventListener("resize", setAppHeight);
-  window.addEventListener("orientationchange", () => setTimeout(setAppHeight, 150));
+  window.addEventListener("orientationchange", () => setTimeout(setAppHeight, 200));
+  window.addEventListener("focus", setAppHeight);
   if (window.visualViewport) {
     window.visualViewport.addEventListener("resize", setAppHeight);
+    window.visualViewport.addEventListener("scroll", setAppHeight);
   }
+  // some in-app browsers (KakaoTalk, etc.) settle their chrome size slightly after load
+  [100, 300, 800, 1500].forEach(ms => setTimeout(setAppHeight, ms));
 
   /* ---------- init ---------- */
   applyTheme();

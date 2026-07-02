@@ -509,9 +509,9 @@ body::before{
 .modal{
   width: 100%;
   max-width: 520px;
-  max-height: 86vh;
-  max-height: 86dvh;
-  max-height: calc(var(--app-height, 100vh) * 0.86);
+  max-height: 82vh;
+  max-height: 82dvh;
+  max-height: calc(var(--app-height, 100vh) - 56px);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   background: var(--surface);
@@ -992,11 +992,13 @@ textarea{ width:100%; resize: vertical; font-family: var(--font-body); }
   .month-sub{ font-size: .76rem; }
 
   .topbar{ margin-bottom: 12px; }
-  .month-nav{ margin-bottom: 14px; gap: 10px; }
+  .month-nav{ flex-direction: column; align-items: stretch; margin-bottom: 14px; gap: 12px; }
   .color-stats{ gap: 5px; margin-top: 7px; }
   .color-stat{ padding: 3px 7px 3px 5px; font-size: .66rem; }
 
-  .nav-stack{ gap: 8px; }
+  .nav-stack{ align-items: center; gap: 8px; width: 100%; }
+  .nav-controls{ justify-content: center; flex-wrap: wrap; }
+  .topbar-actions{ justify-content: center; }
   .nav-btn, .icon-btn{ width: 34px; height: 34px; }
   .today-btn, .jump-btn{ height: 34px; padding: 0 12px; font-size: .78rem; }
   .search-box #searchInput{ width: 90px; }
@@ -1021,12 +1023,12 @@ textarea{ width:100%; resize: vertical; font-family: var(--font-body); }
   .month-nav{ gap: 8px; }
   .nav-group{ border-radius: 10px; }
 
-  /* pack nav row + theme/menu icons onto one line, icon-only jump/color buttons to save width */
-  .nav-stack{ flex-direction: row; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 6px 8px; }
-  .nav-controls{ flex-wrap: nowrap; gap: 6px; }
+  /* pack nav row + theme/menu icons onto one centered line, icon-only jump/color buttons to save width */
+  .nav-stack{ flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px 8px; }
+  .nav-controls{ flex-wrap: nowrap; gap: 6px; justify-content: center; }
   .jump-btn{ padding: 0 9px; gap: 0; }
   .jump-btn .btn-label{ display: none; }
-  .topbar-actions{ gap: 6px; }
+  .topbar-actions{ gap: 6px; justify-content: center; }
 
   .modal{ padding: 18px 16px calc(20px + env(safe-area-inset-bottom, 0px)); }
   .color-cal-nav span{ min-width: 74px; font-size: .86rem; }
