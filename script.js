@@ -404,20 +404,41 @@
     listEl.scrollLeft = 0;
   }
 
+  function positionPickerList(btnEl, listEl) {
+    const rect = btnEl.getBoundingClientRect();
+    listEl.style.position = "fixed";
+    listEl.style.left = `${Math.round(rect.left)}px`;
+    listEl.style.top = `${Math.round(rect.bottom + 6)}px`;
+    listEl.style.width = `${Math.round(rect.width)}px`;
+    listEl.style.right = "auto";
+  }
+
   el.yearPickerBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     const willOpen = !el.yearPicker.classList.contains("open");
     closeAllPickers();
     el.yearPicker.classList.toggle("open", willOpen);
-    if (willOpen) scrollPickerSelectionIntoView(el.yearPickerList);
+    if (willOpen) {
+      positionPickerList(el.yearPickerBtn, el.yearPickerList);
+      scrollPickerSelectionIntoView(el.yearPickerList);
+    }
   });
   el.monthPickerBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     const willOpen = !el.monthPicker.classList.contains("open");
     closeAllPickers();
     el.monthPicker.classList.toggle("open", willOpen);
-    if (willOpen) scrollPickerSelectionIntoView(el.monthPickerList);
+    if (willOpen) {
+      positionPickerList(el.monthPickerBtn, el.monthPickerList);
+      scrollPickerSelectionIntoView(el.monthPickerList);
+    }
   });
+  // if the modal scrolls while a dropdown is open, the fixed-position dropdown would
+  // no longer track the button (which moves with the scrolling modal) -> just close it
+  const jumpModalEl = el.jumpBackdrop.querySelector(".modal");
+  if (jumpModalEl) {
+    jumpModalEl.addEventListener("scroll", () => closeAllPickers(), { passive: true });
+  }
   document.addEventListener("click", () => closeAllPickers());
   el.yearPickerList.addEventListener("click", (e) => e.stopPropagation());
   el.monthPickerList.addEventListener("click", (e) => e.stopPropagation());
