@@ -497,7 +497,8 @@ body::before{
   height: var(--app-height, 100vh);
   background: rgba(60,50,110,0.25);
   backdrop-filter: blur(6px);
-  display:flex; align-items:flex-end; justify-content:center;
+  display:flex; align-items:center; justify-content:center;
+  padding: 20px;
   z-index: 100;
   opacity:0; visibility:hidden;
   transition: opacity .22s ease, visibility .22s ease;
@@ -516,20 +517,14 @@ body::before{
   -webkit-overflow-scrolling: touch;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 26px 26px 0 0;
-  padding: 22px 24px calc(26px + env(safe-area-inset-bottom, 0px));
+  border-radius: var(--radius-lg);
+  padding: 22px 24px 26px;
   box-shadow: var(--shadow-pop);
-  transform: translateY(24px);
+  transform: translateY(10px) scale(.97);
   transition: transform .28s cubic-bezier(.2,.9,.3,1.1);
-  margin-bottom: 0;
+  margin: 0 auto;
 }
-.modal-backdrop.open .modal{ transform: translateY(0); }
-
-@media (min-width: 640px){
-  .modal-backdrop{ align-items:center; }
-  .modal{ border-radius: var(--radius-lg); transform: translateY(10px) scale(.97); }
-  .modal-backdrop.open .modal{ transform: translateY(0) scale(1); }
-}
+.modal-backdrop.open .modal{ transform: translateY(0) scale(1); }
 
 .modal-header{
   position: relative;
@@ -1030,7 +1025,7 @@ textarea{ width:100%; resize: vertical; font-family: var(--font-body); }
   .jump-btn .btn-label{ display: none; }
   .topbar-actions{ gap: 6px; justify-content: center; }
 
-  .modal{ padding: 18px 16px calc(20px + env(safe-area-inset-bottom, 0px)); }
+  .modal{ padding: 18px 16px 20px; }
   .color-cal-nav span{ min-width: 74px; font-size: .86rem; }
 }
 
