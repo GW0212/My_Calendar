@@ -394,9 +394,14 @@
 
   function scrollPickerSelectionIntoView(listEl) {
     const selected = listEl.querySelector(".selected");
-    if (selected && typeof selected.scrollIntoView === "function") {
-      selected.scrollIntoView({ block: "center", inline: "nearest" });
-    }
+    if (!selected) return;
+    // Set scrollTop directly instead of using scrollIntoView(): some browsers (notably
+    // Safari on repeat opens) can animate scrollIntoView even without smooth behavior
+    // requested, which looked like items "sliding" into place. A direct scrollTop
+    // assignment is always instant and has no horizontal/inline side effects.
+    const target = selected.offsetTop - (listEl.clientHeight / 2) + (selected.offsetHeight / 2);
+    listEl.scrollTop = Math.max(0, target);
+    listEl.scrollLeft = 0;
   }
 
   el.yearPickerBtn.addEventListener("click", (e) => {
